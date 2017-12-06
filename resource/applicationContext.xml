@@ -17,7 +17,7 @@
 	<mvc:annotation-driven />
 	<mvc:default-servlet-handler />
 	<aop:aspectj-autoproxy />
-	<aop:config proxy-target-class="true"/>
+	<aop:config proxy-target-class="true" />
 	<mvc:view-controller path="" view-name="redirect:/index" />
 	<mvc:view-controller path="/" view-name="redirect:/index" />
 
@@ -148,14 +148,20 @@
 			advice-ref="txAdvice" />
 	</aop:config>
 
+	<bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+		<property name="cacheManager" ref="cacheManager"></property>
+	</bean>
+
+	<bean id="cacheManager"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:ehcache.xml"></property>
+		<property name="shared" value="true"></property>
+	</bean>
+
 	<import resource="classpath:com/kh/**/**/spring-*.xml" />
 
 	<import resource="classpath:com/kh/**/**/**/spring-*.xml" />
 
 	<import resource="classpath:com/kh/**/**/**/**/spring-*.xml" />
-	
-	<import resource="classpath:shiro-config.xml" />
-	
-	<import resource="classpath:cache-config.xml" />
 
 </beans>
