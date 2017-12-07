@@ -163,5 +163,7 @@
 	<import resource="classpath:com/kh/**/**/**/spring-*.xml" />
 
 	<import resource="classpath:com/kh/**/**/**/**/spring-*.xml" />
+	
+	<import resource="classpath:spring-shiro.xml" />
 
 </beans>
