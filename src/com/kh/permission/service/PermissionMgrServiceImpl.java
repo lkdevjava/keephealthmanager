@@ -11,24 +11,26 @@ import com.kh.permission.dao.PermissionMgrDAO;
 @Service(value = "permissionMgrService")
 public class PermissionMgrServiceImpl implements PermissionMgrService {
 
-    @Autowired
-    private PermissionMgrDAO permissionMgrDAO;
+	@Autowired
+	private PermissionMgrDAO permissionMgrDAO;
 
-    public PermissionMgrDAO getPermissionMgrDAO() {
-	return permissionMgrDAO;
-    }
+	public PermissionMgrDAO getPermissionMgrDAO() {
+		return permissionMgrDAO;
+	}
 
-    public void setPermissionMgrDAO(PermissionMgrDAO permissionMgrDAO) {
-	this.permissionMgrDAO = permissionMgrDAO;
-    }
+	public void setPermissionMgrDAO(PermissionMgrDAO permissionMgrDAO) {
+		this.permissionMgrDAO = permissionMgrDAO;
+	}
 
-    @Override
-    public Set<String> queryRoleRelPermissionsInfosByRoles(Set<String> roles) {
-	Set<String> pers = new HashSet<String>();
-	pers.add("123[52213]");
-	pers.add("34563[52213]");
-	pers.add("/role/queryRoleRelPer[52213]");
-	return pers;
-    }
+	@Override
+	public Set<String> queryRoleRelPermissionsInfosByRoles(Set<String> roles) {
+		Set<String> pers = new HashSet<String>();
+		pers.add("123[52213]");
+		pers.add("34563[52213]");
+		pers.add("role/queryRoleRelPer[52213]");
+		pers.add("test");
+		pers.add("/test");
+		return pers;
+	}
 
 }

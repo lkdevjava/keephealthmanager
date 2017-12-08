@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kh.login.dao.LoginMgrDAO;
+import com.kh.user.model.ManagerUserInfo;
 
 @Service(value = "loginMgrService")
 public class LoginMgrServiceImpl implements LoginMgrService {
@@ -26,7 +27,7 @@ public class LoginMgrServiceImpl implements LoginMgrService {
 	 * @return 
 	 */
 	@Override
-	public boolean queryUserInfoByUserNameAndPasswd(String username,
+	public ManagerUserInfo queryUserInfoByUserNameAndPasswd(String username,
 		String passwd) {
 	    return loginMgrDAO.queryUserInfoByUserNameAndPasswd(username, passwd);
 	}

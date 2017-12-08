@@ -13,7 +13,8 @@
 	http://www.springframework.org/schema/p http://www.springframework.org/schema/util/spring-p-3.2.xsd
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd ">
 
-	<bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.SessionIdGenerator" />
+	<bean id="sessionIdGenerator"
+		class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" />
 
 	<bean id="sessionCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
 		<constructor-arg value="manager_session" />
@@ -23,26 +24,39 @@
 
 	</bean>
 
-	<bean id="loginRealm" class="com.kh.common.shiro.realm.LoginRealm" />
+	<bean id="loginRealm" class="com.kh.common.shiro.realm.LoginRealm">
+		<property name="authenticationCachingEnabled" value="false"/>
+		<property name="authorizationCachingEnabled" value="false"/>
+	</bean>
 
 	<bean id="shiroSessionDao" class="com.kh.common.shiro.session.dao.ShiroSessionDao">
 
 	</bean>
+	
+	<bean id="sessionFactory" class="com.kh.common.shiro.session.factory.SessionFactory"/>
 
 	<bean id="sessionManager"
 		class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
-		<property name="sessionIdCookie" ref="sessionCookie"/>
+		<property name="sessionIdCookie" ref="sessionCookie" />
+		<!-- 间隔多少时间检查，不配置是60分钟 -->
+		<property name="sessionValidationScheduler" ref="sessionValidationScheduler" />
+		<!-- 是否开启 检测，默认开启 -->
+		<property name="sessionValidationSchedulerEnabled" value="true" />
+		<!-- 是否删除无效的，默认也是开启 -->
+		<property name="deleteInvalidSessions" value="true" />
+		<property name="sessionIdCookieEnabled" value="true"/>
+		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
 
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<property name="sessionManager" ref="sessionManager" />
+		<property name="realm" ref="loginRealm" />
 	</bean>
 
 	<!-- 会话验证调度器 -->
 	<bean id="sessionValidationScheduler"
 		class="org.apache.shiro.session.mgt.ExecutorServiceSessionValidationScheduler">
 		<property name="sessionManager" ref="sessionManager" />
-		<property name="realm" ref="loginRealm" />
 	</bean>
 
 	<bean
@@ -53,6 +67,7 @@
 	</bean>
 
 	<bean id="loginFilter" class="com.kh.common.shiro.filter.LoginFilter" />
+	<bean id="permissionFilter" class="com.kh.common.shiro.filter.PermissionFilter" />
 
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager" />
@@ -60,6 +75,7 @@
 			<!-- 定义过来器 -->
 			<util:map>
 				<entry key="login" value-ref="loginFilter" />
+				<entry key="permission" value-ref="permissionFilter" />
 			</util:map>
 		</property>
 		<property name="filterChainDefinitions">
@@ -67,11 +83,26 @@
 				js/**=anon
 				css/**=anon
 				image/**=anon
+				/login=anon
+				/test=permission
 			</value>
 		</property>
 	</bean>
 
 	<!-- Shiro生命周期处理器 -->
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+	<bean
+		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+		depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+	
+	<aop:config proxy-target-class="true"/>
+	<bean
+		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+	
 
 </beans>

@@ -1,5 +1,7 @@
 package com.kh.login.service;
 
+import com.kh.user.model.ManagerUserInfo;
+
 public interface LoginMgrService {
 
     /**
@@ -11,7 +13,7 @@ public interface LoginMgrService {
      *            密码
      * @return
      */
-    public boolean queryUserInfoByUserNameAndPasswd(String username,
+    public ManagerUserInfo queryUserInfoByUserNameAndPasswd(String username,
 	    String passwd);
 
 }
