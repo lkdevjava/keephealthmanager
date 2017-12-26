@@ -23,6 +23,7 @@
 
 	<util:list id="propertiesResources" list-class="java.util.ArrayList">
 		<value>classpath:jdbc.properties</value>
+		<value>classpath:cache.properties</value>
 	</util:list>
 
 	<!-- <bean id="propertyConfigurer" class="com.kh.common.encrypt.SysPropertiesConfig"> 

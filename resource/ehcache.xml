@@ -70,6 +70,18 @@
 		<bootstrapCacheLoaderFactory
 			class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory" />
 	</cache>
+	
+	<cache name="sessionCache" maxElementsInMemory="1" eternal="true"
+		diskSpoolBufferSizeMB="60" overflowToDisk="true" diskPersistent="true"
+		timeToIdleSeconds="300" timeToLiveSeconds="600"
+		diskExpiryThreadIntervalSeconds="1" memoryStoreEvictionPolicy="LFU">
+	</cache>
+	
+	<cache name="loginCache" maxElementsInMemory="1" eternal="true"
+		diskSpoolBufferSizeMB="60" overflowToDisk="true" diskPersistent="true"
+		timeToIdleSeconds="300" timeToLiveSeconds="600"
+		diskExpiryThreadIntervalSeconds="1" memoryStoreEvictionPolicy="LFU">
+	</cache>
 
 	<cache name="authenticationtoken" maxElementsInMemory="1"
 		eternal="true" diskSpoolBufferSizeMB="60" overflowToDisk="true"

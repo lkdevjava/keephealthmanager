@@ -16,6 +16,7 @@
 	<bean id="sessionIdGenerator"
 		class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" />
 
+<!-- 
 	<bean id="sessionCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
 		<constructor-arg value="manager_session" />
 		<property name="domain" value="xx.xxx.xx" />
@@ -23,34 +24,46 @@
 		<property name="httpOnly" value="true" />
 
 	</bean>
+ -->
 
 	<bean id="loginRealm" class="com.kh.common.shiro.realm.LoginRealm">
-		<property name="authenticationCachingEnabled" value="false"/>
+		<property name="authenticationCacheName" value="${loginCacheName}"/>
+		<property name="authenticationCachingEnabled" value="true"/>
 		<property name="authorizationCachingEnabled" value="false"/>
 	</bean>
 
 	<bean id="shiroSessionDao" class="com.kh.common.shiro.session.dao.ShiroSessionDao">
-
+		<property name="sessionService" ref="sessionService" />
+		<property name="sessionIdGenerator" ref="sessionIdGenerator" />
 	</bean>
-	
-	<bean id="sessionFactory" class="com.kh.common.shiro.session.factory.SessionFactory"/>
+
+	<bean id="sessionFactory" class="com.kh.common.shiro.session.factory.SessionFactory" />
 
 	<bean id="sessionManager"
 		class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+		<property name="sessionDAO" ref="shiroSessionDao" />
+		<!-- 
 		<property name="sessionIdCookie" ref="sessionCookie" />
+		 -->
 		<!-- 间隔多少时间检查，不配置是60分钟 -->
 		<property name="sessionValidationScheduler" ref="sessionValidationScheduler" />
 		<!-- 是否开启 检测，默认开启 -->
 		<property name="sessionValidationSchedulerEnabled" value="true" />
 		<!-- 是否删除无效的，默认也是开启 -->
 		<property name="deleteInvalidSessions" value="true" />
-		<property name="sessionIdCookieEnabled" value="true"/>
-		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="sessionIdCookieEnabled" value="true" />
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="sessionListeners">
+			<list>
+				<ref bean="sessionCacheListener" />
+			</list>
+		</property>
 	</bean>
 
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<property name="sessionManager" ref="sessionManager" />
 		<property name="realm" ref="loginRealm" />
+		<property name="cacheManager" ref="loginCacheManager" />
 	</bean>
 
 	<!-- 会话验证调度器 -->
@@ -83,8 +96,11 @@
 				js/**=anon
 				css/**=anon
 				image/**=anon
+				/**=anon
+				<!-- 
 				/login=anon
 				/test=permission
+				 -->
 			</value>
 		</property>
 	</bean>
@@ -97,12 +113,34 @@
 		depends-on="lifecycleBeanPostProcessor">
 		<property name="proxyTargetClass" value="true" />
 	</bean>
-	
-	<aop:config proxy-target-class="true"/>
+
+	<aop:config proxy-target-class="true" />
 	<bean
 		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
 		<property name="securityManager" ref="securityManager" />
 	</bean>
-	
+
+	<bean id="shiroCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManager" ref="cacheManager" />
+	</bean>
+
+	<bean id="sessionService"
+		class="com.kh.common.shiro.session.service.ShiroSessionServiceImpl">
+		<property name="shiroCacheManager" ref="shiroCacheManager" />
+		<property name="cacheName" value="${sessionCacheName}" />
+	</bean>
+
+	<bean id="loginCacheManager" class="com.kh.common.shiro.logincache.mgr.LoginCacheManager">
+		<property name="loginCacheMgrService" ref="loginCacheMgrService" />
+	</bean>
+
+	<bean id="loginCacheMgrService"
+		class="com.kh.common.shiro.logincache.service.LoginCacheMgrServiceImpl">
+		<property name="shiroCacheManager" ref="shiroCacheManager" />
+	</bean>
+
+	<bean id="sessionCacheListener" class="com.kh.common.shiro.session.listener.SessionCacheListener">
+		<property name="sessionService" ref="sessionService" />
+	</bean>
 
 </beans>

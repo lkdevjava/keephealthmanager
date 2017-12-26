@@ -11,7 +11,7 @@ public class SessionFactory implements org.apache.shiro.session.mgt.SessionFacto
 
 	@Override
 	public Session createSession(SessionContext context) {
-		SimpleSession session = new SimpleSession();
+		SimpleSession session = new SimpleSession("manager_session");
 		if (context != null && context instanceof WebSessionContext) {
 			WebSessionContext webSession = (WebSessionContext) context;
 			HttpServletRequest request = (HttpServletRequest) webSession.getServletRequest();

@@ -22,6 +22,7 @@ import com.kh.login.service.LoginMgrService;
 import com.kh.user.model.ManagerUserInfo;
 
 import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
 
 @Controller
 public class LoginMgrController extends BaseController {
@@ -54,6 +55,7 @@ public class LoginMgrController extends BaseController {
 		System.out.println("-------------------------");
 		List<String> keys = cache.getKeys();
 		System.out.println(keys.size());
+		cache.put(new Element("123", "456"));
 		cache.flush();
 		return "index";
 	}
