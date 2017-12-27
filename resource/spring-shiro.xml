@@ -50,7 +50,7 @@
 		<!-- 是否开启 检测，默认开启 -->
 		<property name="sessionValidationSchedulerEnabled" value="true" />
 		<!-- 是否删除无效的，默认也是开启 -->
-		<property name="deleteInvalidSessions" value="true" />
+		<property name="deleteInvalidSessions" value="false" />
 		<property name="sessionIdCookieEnabled" value="true" />
 		<property name="sessionFactory" ref="sessionFactory" />
 		<property name="sessionListeners">

@@ -57,7 +57,7 @@ public class LoginMgrController extends BaseController {
 		System.out.println(keys.size());
 		cache.put(new Element("123", "456"));
 		cache.flush();
-		return "index";
+		return "main";
 	}
 
 	@RequestMapping(value = "/login")

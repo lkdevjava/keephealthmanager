@@ -4,11 +4,15 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta content="IE=edge" http-equiv="X-UA-Compatible">
+<meta content="webkit" name="renderer">
 <link rel="icon"
 	href="<%=request.getContextPath()%>/manager/images/favicon.ico" />
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/manager/css/login.css" />
-<title>keephealth管理后台</title>
+<title>登陆界面</title>
 </head>
 <body>
 	<div class="position1">
