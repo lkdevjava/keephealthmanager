@@ -34,4 +34,8 @@ public class BaseController {
 		return buildResult(true, msg);
 	}
 
+	protected ResultModel failResult(String msg) {
+		return buildResult(false, msg);
+	}
+
 }

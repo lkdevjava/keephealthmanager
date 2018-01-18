@@ -1,7 +1,5 @@
 package com.kh.login.web;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.apache.shiro.SecurityUtils;
@@ -9,29 +7,24 @@ import org.apache.shiro.authc.AccountException;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kh.common.controller.BaseController;
-import com.kh.common.ehcache.service.EhCacheService;
-import com.kh.common.model.ResultModel;
 import com.kh.common.shiro.model.ManagerToken;
 import com.kh.common.utils.Constants;
 import com.kh.login.service.LoginMgrService;
 import com.kh.user.model.ManagerUserInfo;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
-
 @Controller
 public class LoginMgrController extends BaseController {
 
-	@Resource
-	private LoginMgrService loginMgrService;
+	private static Logger logger = LoggerFactory.getLogger(LoginMgrController.class);
 
 	@Resource
-	private EhCacheService ehCacheService;
+	private LoginMgrService loginMgrService;
 
 	public LoginMgrService getLoginMgrService() {
 		return loginMgrService;
@@ -41,45 +34,28 @@ public class LoginMgrController extends BaseController {
 		this.loginMgrService = loginMgrService;
 	}
 
-	public EhCacheService getEhCacheService() {
-		return ehCacheService;
-	}
-
-	public void setEhCacheService(EhCacheService ehCacheService) {
-		this.ehCacheService = ehCacheService;
-	}
-
 	@RequestMapping(value = "/index")
 	public String index() {
-		Cache cache = ehCacheService.getCache("sampleCache3");
-		System.out.println("-------------------------");
-		List<String> keys = cache.getKeys();
-		System.out.println(keys.size());
-		cache.put(new Element("123", "456"));
-		cache.flush();
-		return "main";
+		return "index";
 	}
 
 	@RequestMapping(value = "/login")
-	@ResponseBody
-	public ResultModel login(ManagerUserInfo form) {
+	public String login(ManagerUserInfo form) {
 		Md5Hash md5 = new Md5Hash(form.getPassword(), Constants.SALT);
 		ManagerToken token = new ManagerToken(form.getUsername(), md5.toString());
 		try {
 			Subject subject = SecurityUtils.getSubject();
 			subject.login(token);
 		} catch (DisabledAccountException e) {
-			e.printStackTrace();
+			logger.info(form.getUsername() + "登陆失败,失败原因: 用户被禁用");
+			getRequest().setAttribute("message", "用户被禁用");
+			return "index";
 		} catch (AccountException e) {
-			e.printStackTrace();
+			logger.info(form.getUsername() + "登陆失败,失败原因: 用户名或密码错误");
+			getRequest().setAttribute("message", "用户名或密码错误");
+			return "index";
 		}
-		return successResult();
-	}
-	
-	@RequestMapping(value = "/test")
-	@ResponseBody
-	public ResultModel test() {
-		return successResult();
+		return "main";
 	}
 
 }
