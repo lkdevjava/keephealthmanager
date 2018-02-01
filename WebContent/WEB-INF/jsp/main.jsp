@@ -11,7 +11,7 @@
 <link rel="icon"
 	href="<%=request.getContextPath()%>/manager/images/favicon.ico" />
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/manager/css/main.css" />
+	href="<%=request.getContextPath()%>/manager/css/main.css?_=<%=System.currentTimeMillis() %>" />
 <title>主页</title>
 </head>
 <body>
